@@ -28,6 +28,7 @@ Tanque yo, rival, jugador2;
 ArrayList<Bala> balas=new ArrayList<Bala>();
 ArrayList<Particula> particulas=new ArrayList<Particula>();
 
+// Preparo la ventana y los fondos iniciales.
 void setup(){
   size(600,600);
   frameRate(60);
@@ -37,6 +38,7 @@ void setup(){
 }
 
 // 4. Bucle principal: red, juego, dibujos
+// Actualizo y dibujo cada cuadro de la partida.
 void draw(){
   background(25);
   if(!iniciado){ dibujarMenu(); return; }
@@ -85,6 +87,7 @@ void draw(){
 }
 
 
+// Muestro los puntos de ambos jugadores.
 void dibujarMarcador(){
   for(int i=0;i<5;i++){
     if(i<puntosVerde) fill(70,220,95); else noFill();
@@ -96,6 +99,7 @@ void dibujarMarcador(){
   }
 }
 
+// Muestro el aviso de ronda o de victoria.
 void dibujarOverlay(String mensaje){
   noStroke(); fill(0,190); rectMode(CORNER); rect(0,0,width,height);
   fill(255); textAlign(CENTER); textSize(38); text(mensaje,300,300);
@@ -106,6 +110,7 @@ void dibujarOverlay(String mensaje){
   textAlign(LEFT);
 }
 
+// Elijo los colores verdes del menú al azar.
 void generarCamuflaje(){
   color[] verdes={color(65,105,57),color(87,128,68),color(111,145,78),color(47,83,49)};
   for(int fila=0;fila<15;fila++) for(int col=0;col<15;col++)
@@ -113,6 +118,7 @@ void generarCamuflaje(){
 }
 
 
+// Dibujo la grilla de camuflaje.
 void dibujarFondoCamuflaje(){
   for(int fila=0;fila<15;fila++) for(int col=0;col<15;col++){
     fill(fondoCamuflaje[fila][col]);
@@ -120,6 +126,7 @@ void dibujarFondoCamuflaje(){
   }
 }
 
+// Muestro las opciones para iniciar el juego.
 void dibujarMenu(){
   dibujarFondoCamuflaje();
   fill(255); textAlign(CENTER); textSize(56); text("TankLAN",300,190);
@@ -137,6 +144,7 @@ void dibujarMenu(){
   textAlign(LEFT);
 }
 
+// Informo que el cliente está esperando conexión.
 void dibujarSalaEspera(){
   dibujarFondoCamuflaje();
   noStroke(); fill(0,140); rect(0,0,width,height);
@@ -147,18 +155,21 @@ void dibujarSalaEspera(){
   textAlign(LEFT);
 }
 
+// Dibujo un botón con su color y su texto.
 void dibujarBoton(String etiqueta,int y,color tono){
   rectMode(CENTER); noStroke(); fill(tono);
   rect(300,y,260,58,12); fill(255); textAlign(CENTER);
   textSize(21); text(etiqueta,300,y+7); rectMode(CORNER);
 }
 
+// Inicio el modo elegido al hacer clic.
 void mousePressed(){
   if(iniciado || menuMultijugador) return;
   if(mouseX>170 && mouseX<430 && mouseY>246 && mouseY<304) iniciarOffline();
   else if(mouseX>170 && mouseX<430 && mouseY>326 && mouseY<384) menuMultijugador=true;
 }
 
+// Preparo los tanques para jugar por red.
 void iniciarPartida(boolean servidorLocal){
   modoOffline=false;
   numeroRonda=1; puntosVerde=0; puntosAzul=0;
@@ -176,6 +187,7 @@ void iniciarPartida(boolean servidorLocal){
   if(soyServidor) mostrarRonda();
 }
 
+// Preparo los dos jugadores en la misma computadora.
 void iniciarOffline(){
   modoOffline=true; soyServidor=false; miId=SERVIDOR;
   numeroRonda=1; puntosVerde=0; puntosAzul=0;
@@ -188,11 +200,13 @@ void iniciarOffline(){
   mostrarRonda();
 }
 
+// Muestro el número de ronda durante dos segundos.
 void mostrarRonda(){
   rondaTerminada=true;
   mostrarGanadorHasta=millis()+2000;
 }
 
+// Reinicio la ronda y avanzo al mapa siguiente.
 void iniciarRondaLocal(){
   numeroMapa=(numeroMapa+1)%mapas.length;
   PVector inicioVerde=posicionInicio(SERVIDOR);
@@ -204,6 +218,7 @@ void iniciarRondaLocal(){
   espacioPulsado=false; enterPulsado=false;
 }
 
+// Respondo a las teclas de juego y del menú.
 void keyPressed(){
   if(partidaTerminada){
     if(key==ENTER||key==RETURN||keyCode==ENTER||keyCode==RETURN||key==ESC){
@@ -242,6 +257,7 @@ void keyPressed(){
 }
 
 
+// Cierro la conexión y reinicio el menú.
 void volverAlMenu(){
   iniciado=false;
   esperandoSala=false;
@@ -253,6 +269,7 @@ void volverAlMenu(){
   numeroRonda=1; numeroMapa=0; puntosVerde=0; puntosAzul=0; ganador=0;
 }
 
+// Registro cuándo se sueltan las teclas.
 void keyReleased(){
   if(key==' ') espacioPulsado=false;
   if(key==ENTER||key==RETURN||keyCode==ENTER||keyCode==RETURN) enterPulsado=false;
