@@ -5,7 +5,7 @@ import java.util.*;
 final int TAM_CASILLA=40;
 final int PUERTO=12345;
 final int SERVIDOR=1, CLIENTE=2;
-String ipServidor="192.168.1.9";
+String ipServidor="127.0.0.1";
 
 // 2. Red
 Server servidor;
