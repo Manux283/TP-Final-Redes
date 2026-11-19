@@ -5,10 +5,10 @@ class Tanque{
   boolean arriba,abajo,izquierda,derecha;
   int ultimoEnvio=0;
 
-  // Creo el tanque en la posición inicial.
+  // Crear el tanque en la posición inicial.
   Tanque(float x,float y){ pos.set(x,y); }
 
-  // Actualizo el control de movimiento del modo red.
+  // Actualizar el control de movimiento del modo red.
   void cambiarTecla(char tecla,int codigo,boolean pulsada){
     if(tecla=='w'||tecla=='W'||codigo==UP) arriba=pulsada;
     if(tecla=='s'||tecla=='S'||codigo==DOWN) abajo=pulsada;
@@ -16,7 +16,7 @@ class Tanque{
     if(tecla=='d'||tecla=='D'||codigo==RIGHT) derecha=pulsada;
   }
 
-  // Actualizo las teclas WASD del jugador verde.
+  // Actualizar las teclas WASD del jugador verde.
   void cambiarWASD(char tecla,boolean pulsada){
     if(tecla=='w'||tecla=='W') arriba=pulsada;
     if(tecla=='s'||tecla=='S') abajo=pulsada;
@@ -24,7 +24,7 @@ class Tanque{
     if(tecla=='d'||tecla=='D') derecha=pulsada;
   }
 
-  // Actualizo las flechas del jugador azul.
+  // Actualizar las flechas del jugador azul.
   void cambiarFlechas(int codigo,boolean pulsada){
     if(codigo==UP) arriba=pulsada;
     if(codigo==DOWN) abajo=pulsada;
@@ -32,10 +32,10 @@ class Tanque{
     if(codigo==RIGHT) derecha=pulsada;
   }
 
-  // Libero todas las teclas al reiniciar la ronda.
+  // Liberar todas las teclas al reiniciar la ronda.
   void soltarTeclas(){ arriba=abajo=izquierda=derecha=false; }
 
-  // Muevo el tanque sin atravesar paredes.
+  // Mover el tanque sin atravesar paredes.
   void mover(){
     float vx=(derecha?2:0)-(izquierda?2:0);
     float vy=(abajo?2:0)-(arriba?2:0);
@@ -45,13 +45,13 @@ class Tanque{
     if(!choca(pos.x,pos.y+vy)) pos.y+=vy;
   }
 
-  // Reviso las esquinas del tanque contra el mapa.
+  // Revisar las esquinas del tanque contra el mapa.
   boolean choca(float x,float y){
     return hayPared(x-10,y-10)||hayPared(x+10,y-10)
       ||hayPared(x-10,y+10)||hayPared(x+10,y+10);
   }
 
-  // Dibujo el tanque y apunto el cañón sin deformarlo.
+  // Dibujar el tanque y apuntar el cañón sin deformarlo.
   void dibujar(color colorTanque){
     rectMode(CENTER); noStroke(); fill(35);
     rect(pos.x-10,pos.y,7,26); rect(pos.x+10,pos.y,7,26);
@@ -64,7 +64,7 @@ class Tanque{
     rectMode(CORNER);
   }
 
-  // Creo una bala y la envío al rival si juego en red.
+  // Crear una bala y enviarla al rival en el modo red.
   void disparar(int id){
     float x=pos.x+dx*21, y=pos.y+dy*21;
     balas.add(new Bala(x,y,dx,dy,id));
@@ -78,12 +78,12 @@ class Bala{
   int dueño;
   boolean muerta=false;
 
-  // Creo una bala con posición, dirección y dueño.
+  // Crear una bala con posición, dirección y dueño.
   Bala(float x,float y,float dx,float dy,int id){
     pos.set(x,y); vel.set(dx*5,dy*5); dueño=id;
   }
 
-  // Muevo la bala y compruebo sus impactos.
+  // Mover la bala y comprobar sus impactos.
   void actualizar(){
     pos.add(vel);
     if(hayPared(pos.x,pos.y)){
@@ -104,11 +104,11 @@ class Bala{
     }
   }
 
-    // Dibujo la bala en pantalla.
+    // Dibujar la bala en pantalla.
   void dibujar(){ noStroke(); fill(255,220,80); ellipse(pos.x,pos.y,7,7); }
 }
 
-// Actualizo las balas y partículas y quito las que terminan.
+// Actualizar las balas y partículas y quitar las que terminan.
 void actualizarObjetos(){
   for(int i=balas.size()-1;i>=0;i--){
     Bala b=balas.get(i); b.actualizar(); b.dibujar();
