@@ -104,7 +104,8 @@ class Bala{
     }
   }
 
-  // Dibujo la bala en pantalla.\r\n  void dibujar(){ noStroke(); fill(255,220,80); ellipse(pos.x,pos.y,7,7); }
+    // Dibujo la bala en pantalla.
+  void dibujar(){ noStroke(); fill(255,220,80); ellipse(pos.x,pos.y,7,7); }
 }
 
 // Actualizo las balas y partículas y quito las que terminan.
