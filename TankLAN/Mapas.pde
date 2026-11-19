@@ -82,6 +82,7 @@ int[][] posicionesInicio={
   {1,3,13,11}, {2,3,12,11}, {1,3,13,11}, {2,5,12,9}, {1,1,13,13}
 };
 
+// Calculo la posición inicial del jugador en píxeles.
 PVector posicionInicio(int id){
   int indice=id==SERVIDOR?0:2;
   float x=posicionesInicio[numeroMapa][indice]*TAM_CASILLA+TAM_CASILLA/2;
@@ -91,6 +92,7 @@ PVector posicionInicio(int id){
 
 int[][] tonosPiso = new int[15][15];
 
+// Creo al azar los tonos del piso arenoso.
 void generarCamuflajeDesierto() {
   int[] arena = {
     color(194,171,128),
@@ -106,6 +108,7 @@ void generarCamuflajeDesierto() {
   }
 }
 
+// Dibujo el piso y las cajas del mapa.
 void dibujarMapa(){
   for(int fila=0;fila<15;fila++) for(int col=0;col<15;col++){
     fill(tonosPiso[fila][col]);
@@ -118,6 +121,7 @@ void dibujarMapa(){
   }
 }
 
+// Compruebo si un punto toca una pared o el borde.
 boolean hayPared(float x,float y){
   if(x<10||x>590||y<10||y>590) return true;
   int col=int(x/TAM_CASILLA), fila=int(y/TAM_CASILLA);
