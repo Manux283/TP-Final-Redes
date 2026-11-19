@@ -1,5 +1,4 @@
-// Inicio la comunicación de red en segundo plano.
-// el hilo escucha la red y guarda cada linea para que draw() la procese.
+// La escucha guarda mensajes para procesarlos luego en draw().
 // Inicio el servidor o intento conectar el cliente.
 void iniciarRed(){
   if(soyServidor){
