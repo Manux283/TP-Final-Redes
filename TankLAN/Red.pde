@@ -1,4 +1,6 @@
+// Inicio la comunicación de red en segundo plano.
 // el hilo escucha la red y guarda cada linea para que draw() la procese.
+// Inicio el servidor o intento conectar el cliente.
 void iniciarRed(){
   if(soyServidor){
     servidor=new Server(this,PUERTO);
@@ -8,6 +10,7 @@ void iniciarRed(){
   }
 }
 
+// Conecto al servidor sin frenar la pantalla.
 void conectarEnSegundoPlano(){
   try{
     cliente=new Client(this,ipServidor,PUERTO);
@@ -20,6 +23,7 @@ void conectarEnSegundoPlano(){
   }
 }
 
+// Recibo mensajes en un hilo separado.
 void escucharRed(){
   while(iniciado) try{
     if(soyServidor){
@@ -40,6 +44,7 @@ void escucharRed(){
   }catch(Exception e){}
 }
 
+// Interpreto los mensajes y actualizo el juego.
 void procesarMensajes(){
   synchronized(mensajesPendientes){
     for(String linea:mensajesPendientes) try{
@@ -68,11 +73,13 @@ void procesarMensajes(){
   }
 }
 
+// Envío una línea de información al otro jugador.
 void enviarRed(String linea){
   if(soyServidor && servidor!=null) servidor.write(linea+"\n");
   else if(cliente!=null && cliente.active()) cliente.write(linea+"\n");
 }
 
+// El servidor decide quién ganó la ronda.
 void terminarRonda(int jugadorMuerto){
   if(rondaTerminada) return;
   ganador=jugadorMuerto==SERVIDOR?CLIENTE:SERVIDOR;
@@ -80,6 +87,7 @@ void terminarRonda(int jugadorMuerto){
   servidor.write("FIN,"+ganador+","+puntosVerde+","+puntosAzul+","+numeroRonda+","+partidaTerminada+"\n");
 }
 
+// Sumo el punto y reviso si alguien llegó a cinco.
 void cerrarRonda(int idGanador){
   if(rondaTerminada) return;
   ganador=idGanador;
@@ -91,6 +99,7 @@ void cerrarRonda(int idGanador){
   mostrarGanadorHasta=millis()+2000;
 }
 
+// Cambio de mapa y aviso al cliente de la ronda nueva.
 void empezarNuevaRonda(){
   numeroMapa=(numeroMapa+1)%mapas.length;
   reiniciarPosiciones();
@@ -99,6 +108,7 @@ void empezarNuevaRonda(){
   servidor.write("NUEVA,"+numeroMapa+","+numeroRonda+","+puntosVerde+","+puntosAzul+"\n");
 }
 
+// Devuelvo los tanques a sus posiciones y limpio objetos.
 void reiniciarPosiciones(){
   PVector inicioYo=posicionInicio(miId);
   PVector inicioRival=posicionInicio(miId==SERVIDOR?CLIENTE:SERVIDOR);
