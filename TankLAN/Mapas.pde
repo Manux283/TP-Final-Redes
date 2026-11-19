@@ -77,16 +77,12 @@ String[][] mapas={
 "..............."}
 };
 
-// Posiciones libres para iniciar cada mapa: servidor X/Y, cliente X/Y en casillas.
-int[][] posicionesInicio={
-  {1,3,13,11}, {2,3,12,11}, {1,3,13,11}, {2,5,12,9}, {1,1,13,13}
-};
-
-// Calcular la posición inicial del jugador en píxeles.
+// Calcular los puntos de inicio fijos, libres en los cinco mapas.
 PVector posicionInicio(int id){
-  int indice=id==SERVIDOR?0:2;
-  float x=posicionesInicio[numeroMapa][indice]*TAM_CASILLA+TAM_CASILLA/2;
-  float y=posicionesInicio[numeroMapa][indice+1]*TAM_CASILLA+TAM_CASILLA/2;
+  int columna=id==SERVIDOR?2:12;
+  int fila=id==SERVIDOR?3:11;
+  float x=columna*TAM_CASILLA+TAM_CASILLA/2;
+  float y=fila*TAM_CASILLA+TAM_CASILLA/2;
   return new PVector(x,y);
 }
 
