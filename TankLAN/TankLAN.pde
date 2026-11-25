@@ -6,6 +6,7 @@ final int TAM_CASILLA=40;
 final int PUERTO=12345;
 final int SERVIDOR=1, CLIENTE=2;
 final int VIDA_MAXIMA=100, DAÑO_BALA=25, DAÑO_MINA=50;
+final int RECARGA_DISPARO=500;   // medio segundo entre disparos
 String ipServidor="127.0.0.1";
 
 // 2. Pantalla completa: todo se dibuja como si el mapa midiera 600x600

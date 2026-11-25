@@ -75,12 +75,12 @@ void golpear(int victimaId,int daño){
   else enviarRed("GOLPE,"+victimaId+","+daño);
 }
 
-// Restar vida (o gastar el escudo) y cerrar la ronda si el tanque queda sin vida.
+// Restar vida y cerrar la ronda si el tanque queda sin vida. Con escudo no pasa nada.
 void aplicarDaño(int victimaId,int daño){
   if(rondaTerminada) return;
   Tanque t=tanqueDe(victimaId);
-  if(t.escudo) t.escudo=false;
-  else t.vida=max(0,t.vida-daño);
+  if(t.tieneEscudo()) return;
+  t.vida=max(0,t.vida-daño);
   if(soyServidor) enviarVida();
   if(t.vida>0) return;
   if(modoOffline) cerrarRonda(otroJugador(victimaId));

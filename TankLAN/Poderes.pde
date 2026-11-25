@@ -2,7 +2,9 @@
 
 // Tipos de poder que puede traer una caja.
 final int VELOCIDAD=0, DAÑO_DOBLE=1, ESCUDO=2, MINA=3;
-final int DURACION_PODER=8000;       // velocidad y daño doble duran 8 segundos
+final int DURACION_VELOCIDAD=8000;     // duración de cada poder, en milisegundos
+final int DURACION_DAÑO_DOBLE=12000;
+final int DURACION_ESCUDO=10000;
 final int CADA_CUANTO_CAJA=20000;    // aparece una caja cada 20 segundos
 final int MAXIMO_CAJAS=2;
 String[] nombresPoder={"VELOCIDAD","DAÑO X2","ESCUDO","MINA"};
@@ -182,9 +184,9 @@ void revisarRecogidas(Tanque t){
 
 // Darle al tanque el poder que salió en la caja.
 void aplicarPoder(Tanque t,int tipo){
-  if(tipo==VELOCIDAD) t.finVelocidad=millis()+DURACION_PODER;
-  if(tipo==DAÑO_DOBLE) t.finDañoDoble=millis()+DURACION_PODER;
-  if(tipo==ESCUDO) t.escudo=true;
+  if(tipo==VELOCIDAD) t.finVelocidad=millis()+DURACION_VELOCIDAD;
+  if(tipo==DAÑO_DOBLE) t.finDañoDoble=millis()+DURACION_DAÑO_DOBLE;
+  if(tipo==ESCUDO) t.finEscudo=millis()+DURACION_ESCUDO;
   if(tipo==MINA) t.minaLista=true;
   t.mostrarAviso(nombresPoder[tipo]);
   explotar(t.pos.x,t.pos.y,12,colorPoder(tipo),2);

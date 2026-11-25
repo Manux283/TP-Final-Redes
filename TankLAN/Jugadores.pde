@@ -9,8 +9,9 @@ class Tanque{
   // Vida y poderes
   int vida=VIDA_MAXIMA;
   float vidaVisible=VIDA_MAXIMA;   // baja de a poco para animar la barra
-  int finVelocidad=0, finDañoDoble=0;
-  boolean escudo=false, minaLista=false;
+  int finVelocidad=0, finDañoDoble=0, finEscudo=0;
+  boolean minaLista=false;
+  int ultimoDisparo=0;             // para la recarga entre disparos
 
   // Detalles visuales
   float oruga=0;                   // mueve las marcas de las orugas
@@ -27,8 +28,8 @@ class Tanque{
     pos.set(inicio.x,inicio.y);
     dx=0; dy=id==SERVIDOR?1:-1;
     vida=VIDA_MAXIMA; vidaVisible=VIDA_MAXIMA;
-    finVelocidad=0; finDañoDoble=0;
-    escudo=false; minaLista=false;
+    finVelocidad=0; finDañoDoble=0; finEscudo=0;
+    minaLista=false; ultimoDisparo=0;
     exploto=false; avisoHasta=0;
     soltarTeclas();
   }
@@ -62,6 +63,8 @@ class Tanque{
 
   boolean tieneVelocidad(){ return millis()<finVelocidad; }
   boolean tieneDañoDoble(){ return millis()<finDañoDoble; }
+  boolean tieneEscudo(){ return millis()<finEscudo; }
+  boolean recargando(){ return millis()-ultimoDisparo<RECARGA_DISPARO; }
 
   // Mover el tanque sin atravesar paredes (más rápido con el poder de velocidad).
   void mover(){
@@ -89,7 +92,8 @@ class Tanque{
 
   // Disparar una bala o, si tiene una mina guardada, dejarla en el piso.
   void disparar(){
-    if(vida<=0) return;
+    if(vida<=0 || recargando()) return;
+    ultimoDisparo=millis();
     if(minaLista){ ponerMina(this); return; }
     float x=pos.x+dx*21, y=pos.y+dy*21;
     int daño=tieneDañoDoble()?DAÑO_BALA*2:DAÑO_BALA;
@@ -100,7 +104,7 @@ class Tanque{
 
   // Efecto visual al recibir un impacto (la vida la resta golpear()).
   void recibirImpacto(){
-    if(escudo) explotar(pos.x,pos.y,12,color(120,215,255),2.5);
+    if(tieneEscudo()) explotar(pos.x,pos.y,12,color(120,215,255),2.5);
     else{
       golpeadoHasta=millis()+120;
       explotar(pos.x,pos.y,10,color(255,120,40),2.5);
@@ -151,8 +155,17 @@ class Tanque{
     popMatrix();
     rectMode(CORNER);
 
-    if(escudo) dibujarEscudo();
+    if(tieneEscudo()) dibujarEscudo();
+    if(recargando() && vida>0) dibujarRecarga();
     dibujarAviso();
+  }
+
+  // Barrita blanca encima del tanque que se llena mientras recarga el disparo.
+  void dibujarRecarga(){
+    float avance=(millis()-ultimoDisparo)/(float)RECARGA_DISPARO;
+    rectMode(CORNER); noStroke();
+    fill(0,130); rect(pos.x-14,pos.y-26,28,5,2);
+    fill(255); rect(pos.x-13,pos.y-25,26*avance,3,1);
   }
 
   // Dibujar la burbuja del escudo.
@@ -167,7 +180,7 @@ class Tanque{
   void dibujarAviso(){
     if(millis()>=avisoHasta) return;
     float resto=(avisoHasta-millis())/1500.0;
-    float y=pos.y-30-(1-resto)*15;
+    float y=pos.y-38-(1-resto)*15;
     textAlign(CENTER,CENTER); textSize(16);
     fill(0,200*resto); text(aviso,pos.x+1,y+2);
     fill(255,255*resto); text(aviso,pos.x,y);

@@ -3,7 +3,7 @@
 //   POS,id,x,y,dx,dy          posición de un tanque
 //   BALA,id,x,y,dx,dy,daño    disparo nuevo
 //   GOLPE,victima,daño        el cliente avisa que pegó (lo resuelve el servidor)
-//   VIDA,v1,v2,e1,e2          el servidor manda la vida y los escudos de los dos
+//   VIDA,v1,v2                el servidor manda la vida de los dos
 //   CAJA,col,fila,tipo        el servidor crea una caja de poder
 //   TOMA,id,col,fila          un tanque agarró una caja
 //   MINA,id,x,y               un tanque dejó una mina
@@ -87,7 +87,6 @@ void procesarMensaje(String[] dato){
     aplicarDaño(int(dato[1]),int(dato[2]));
   }else if(tipo.equals("VIDA") && !soyServidor){
     tanqueDe(SERVIDOR).vida=int(dato[1]); tanqueDe(CLIENTE).vida=int(dato[2]);
-    tanqueDe(SERVIDOR).escudo=boolean(dato[3]); tanqueDe(CLIENTE).escudo=boolean(dato[4]);
   }else if(tipo.equals("FIN")){
     ganador=int(dato[1]); puntosVerde=int(dato[2]); puntosAzul=int(dato[3]);
     numeroRonda=int(dato[4]); partidaTerminada=boolean(dato[5]);
@@ -125,10 +124,9 @@ void enviarPosicion(){
   yo.ultimoEnvio=millis();
 }
 
-// El servidor le manda al cliente la vida y los escudos de los dos tanques.
+// El servidor le manda al cliente la vida de los dos tanques.
 void enviarVida(){
-  Tanque verde=tanqueDe(SERVIDOR), azul=tanqueDe(CLIENTE);
-  enviarRed("VIDA,"+verde.vida+","+azul.vida+","+verde.escudo+","+azul.escudo);
+  enviarRed("VIDA,"+tanqueDe(SERVIDOR).vida+","+tanqueDe(CLIENTE).vida);
 }
 
 // Decidir en el servidor quién ganó la ronda y avisarle al cliente.

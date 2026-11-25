@@ -15,7 +15,7 @@ El juego se abre en pantalla completa. El mapa es un cuadrado que ocupa todo el 
 Internamente todo se dibuja como si el mapa midiera 600 × 600 y después se agranda con `scale()`, así que la lógica del mapa no cambia según la pantalla.
 
 ## Vida, rondas y puntaje
-Cada tanque tiene 100 de vida. Una bala saca 25 (4 impactos) y una mina saca 50. Cuando un tanque se queda sin vida explota y aparece **PUNTO PARA VERDE** o **PUNTO PARA AZUL** junto con el número de la ronda siguiente. El primero en llegar a cinco puntos gana la partida (`VERDE GANA` / `AZUL GANA`). Los cinco mapas se repiten en orden.
+Cada tanque tiene 100 de vida. Una bala saca 25 (4 impactos) y una mina saca 50. Entre disparo y disparo hay que esperar medio segundo; mientras recarga, aparece una barrita blanca encima del tanque. Cuando un tanque se queda sin vida explota y aparece **PUNTO PARA VERDE** o **PUNTO PARA AZUL** junto con el número de la ronda siguiente. El primero en llegar a cinco puntos gana la partida (`VERDE GANA` / `AZUL GANA`). Los cinco mapas se repiten en orden.
 
 ## Poderes
 Cada 20 segundos aparece una **caja de madera con un "?"** en una casilla libre al azar (como máximo 2 a la vez). Al pasar por encima se obtiene un poder aleatorio:
@@ -23,8 +23,8 @@ Cada 20 segundos aparece una **caja de madera con un "?"** en una casilla libre 
 | Poder | Efecto |
 |---|---|
 | Velocidad | Se mueve al doble de velocidad durante 8 s |
-| Daño x2 | Las balas sacan 50 durante 8 s |
-| Escudo | Absorbe el próximo impacto (bala o mina) |
+| Daño x2 | Las balas sacan 50 durante 12 s |
+| Escudo | No recibe ningún daño (balas ni minas) durante 10 s |
 | Mina | El próximo disparo deja una mina en el piso; explota cuando el rival la pisa |
 
 Además, al empezar cada mapa hay un **kit de auxilio** (cruz verde) en la esquina de la base de cada jugador. Solo lo puede usar su dueño, restaura toda la vida y aparece una sola vez por mapa: para curarse hay que volver a la base.

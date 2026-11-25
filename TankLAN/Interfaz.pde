@@ -5,7 +5,7 @@ float escalaTexto=1;   // en pantallas poco anchas los textos del panel se achic
 // Dibujar el panel lateral de un jugador: nombre, vida, puntos y poderes.
 void dibujarPanel(int id,float x0){
   float ancho=mapaX;
-  if(ancho<60) return;              // pantalla casi cuadrada: no hay lugar a los costados
+  if(ancho<60) return;              // pantalla casi cuadrada por lo que no hay lugar a los costados
   escalaTexto=min(1,ancho/150.0);
   Tanque t=tanqueDe(id);
   color c=colorJugador(id);
@@ -96,12 +96,14 @@ void dibujarMedalla(float x,float y,boolean ganada,color c){
 void dibujarPoderesActivos(Tanque t,float x,float y,float w){
   float yFila=y;
   if(t.tieneVelocidad()){
-    filaPoder(VELOCIDAD,(t.finVelocidad-millis())/(float)DURACION_PODER,x,yFila,w); yFila+=30;
+    filaPoder(VELOCIDAD,(t.finVelocidad-millis())/(float)DURACION_VELOCIDAD,x,yFila,w); yFila+=30;
   }
   if(t.tieneDañoDoble()){
-    filaPoder(DAÑO_DOBLE,(t.finDañoDoble-millis())/(float)DURACION_PODER,x,yFila,w); yFila+=30;
+    filaPoder(DAÑO_DOBLE,(t.finDañoDoble-millis())/(float)DURACION_DAÑO_DOBLE,x,yFila,w); yFila+=30;
   }
-  if(t.escudo){ filaPoder(ESCUDO,1,x,yFila,w); yFila+=30; }
+  if(t.tieneEscudo()){
+    filaPoder(ESCUDO,(t.finEscudo-millis())/(float)DURACION_ESCUDO,x,yFila,w); yFila+=30;
+  }
   if(t.minaLista){ filaPoder(MINA,1,x,yFila,w); yFila+=30; }
   if(yFila==y){
     textAlign(CENTER,CENTER); textSize(14*escalaTexto); fill(255,60);
