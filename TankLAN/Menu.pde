@@ -15,11 +15,35 @@ void teclaMenu(boolean esc,boolean enter){
   String[] opciones=opcionesActuales();
   if(keyCode==UP) opcionMenu=(opcionMenu+opciones.length-1)%opciones.length;
   if(keyCode==DOWN) opcionMenu=(opcionMenu+1)%opciones.length;
+  if(menuMultijugador) escribirIp();
   if(enter) elegirOpcion(opciones[opcionMenu]);
   if(esc){
     if(menuMultijugador) abrirMenu(false);
     else exit();
   }
+}
+
+// En el menú multijugador, los números y el punto escriben la IP del servidor.
+// Si se borra todo, vuelve a usar la IP encontrada automáticamente.
+void escribirIp(){
+  boolean valida=(key>='0' && key<='9') || key=='.';
+  if(valida){
+    if(!ipEscritaAMano) ipServidor="";   // al empezar a escribir se reemplaza la automática
+    ipEscritaAMano=true;
+    if(ipServidor.length()<15) ipServidor+=key;
+  }
+  if(key==BACKSPACE && ipServidor.length()>0) ipServidor=ipServidor.substring(0,ipServidor.length()-1);
+  if(key==BACKSPACE && ipServidor.length()==0){
+    ipEscritaAMano=false;
+    ipServidor=ipEncontrada.equals("")?"127.0.0.1":ipEncontrada;
+  }
+}
+
+// Texto que explica de dónde salió la IP.
+String origenIp(){
+  if(ipEscritaAMano) return "ESCRITA A MANO (BORRALA PARA USAR LA AUTOMÁTICA)";
+  if(!ipEncontrada.equals("")) return "SERVIDOR ENCONTRADO AUTOMÁTICAMENTE";
+  return "BUSCANDO SERVIDOR EN LA RED... (O ESCRIBÍ LA IP)";
 }
 
 // Hacer lo que dice la opción elegida.
@@ -81,8 +105,11 @@ void dibujarMenu(){
     dibujarTarjeta(240,320);
     textSize(28); textoConSombra("MULTIJUGADOR",300,272,color(255));
     for(int i=0;i<opciones.length;i++) dibujarBoton(opciones[i],330+i*68,i==opcionMenu);
-    textAlign(CENTER,CENTER); textSize(15); fill(255,170);
-    text("IP DEL SERVIDOR: "+ipServidor,300,530);
+    String cursor=frameCount%60<30?"_":" ";
+    textAlign(CENTER,CENTER); textSize(17); fill(255,230,140);
+    text("IP DEL SERVIDOR: "+ipServidor+cursor,300,522);
+    textSize(12); fill(255,140);
+    text(origenIp(),300,545);
   }
   textAlign(CENTER,CENTER); textSize(14); fill(255,170);
   text("FLECHAS: ELEGIR   |   ENTER: ACEPTAR   |   ESC: "+(menuMultijugador?"VOLVER":"SALIR"),300,582);
@@ -137,13 +164,16 @@ void dibujarBoton(String etiqueta,float y,boolean elegido){
 void dibujarSalaEspera(){
   dibujarFondoCamuflaje();
   translate(mapaX,0);
-  dibujarTarjeta(210,190);
+  dibujarTarjeta(200,220);
   textAlign(CENTER,CENTER);
-  textSize(32); textoConSombra("SALA DE ESPERA",300,250,color(255));
-  textSize(18); fill(255,220); text(estadoConexion,300,295);
+  textSize(32); textoConSombra("SALA DE ESPERA",300,240,color(255));
+  textSize(18); fill(255,220); text(estadoConexion,300,285);
+  if(soyServidor){                            // el cliente tiene que escribir esta IP
+    textSize(20); fill(255,230,140); text("TU IP: "+miIpLocal,300,318);
+  }
   for(int i=0;i<3;i++){                       // tres puntitos que laten
     fill(255,80+175*(sin(millis()*0.006-i*0.8)*0.5+0.5));
-    ellipse(285+i*15,330,8,8);
+    ellipse(285+i*15,352,8,8);
   }
-  textSize(15); fill(255,160); text("ESC PARA VOLVER AL MENÚ",300,370);
+  textSize(15); fill(255,160); text("ESC PARA VOLVER AL MENÚ",300,392);
 }

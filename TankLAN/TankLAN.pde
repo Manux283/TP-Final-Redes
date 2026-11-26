@@ -1,9 +1,11 @@
 import processing.net.*;
 import java.util.*;
+import java.net.*;
 
 // 1. Configuracion
 final int TAM_CASILLA=40;
 final int PUERTO=12345;
+final int PUERTO_AVISO=12346;    // por acá el servidor avisa que existe (UDP)
 final int SERVIDOR=1, CLIENTE=2;
 final int VIDA_MAXIMA=100, DAÑO_BALA=25, DAÑO_MINA=50;
 final int RECARGA_DISPARO=500;   // medio segundo entre disparos
@@ -43,6 +45,7 @@ void setup(){
   generarCamuflaje();
   generarCamuflajeDesierto();
   crearTanquesDelMenu();
+  thread("buscarServidores");    // escucha siempre los avisos de servidores en la red
 }
 
 // 5. Bucle principal: red, juego, dibujos

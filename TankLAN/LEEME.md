@@ -30,7 +30,10 @@ Cada 20 segundos aparece una **caja de madera con un "?"** en una casilla libre 
 Además, al empezar cada mapa hay un **kit de auxilio** (cruz verde) en la esquina de la base de cada jugador. Solo lo puede usar su dueño, restaura toda la vida y aparece una sola vez por mapa: para curarse hay que volver a la base.
 
 ## Red local
-Para dos ventanas en una PC, usa `127.0.0.1` como `ipServidor`. Entre dos computadoras, el cliente debe usar la IPv4 local del servidor. El puerto TCP es 12345 y el firewall debe permitirlo. La partida empieza cuando los dos jugadores están conectados. En red, la vida la decide el servidor; los mensajes están explicados al principio de `Red.pde`.
+1. En la PC del servidor: MULTIJUGADOR → CREAR PARTIDA. En la sala de espera aparece **TU IP** (por ejemplo `192.168.0.15`).
+2. En la PC del cliente: MULTIJUGADOR. La IP del servidor se completa sola: el servidor avisa a toda la red una vez por segundo (broadcast UDP por el puerto 12346) y el cliente copia la IP de quien avisó. Si no la encuentra, se puede escribir con los números del teclado (RETROCESO borra; si se borra toda, vuelve a la automática). Después, CONECTARSE. El cliente reintenta solo cada segundo y medio hasta encontrar al servidor.
+
+`127.0.0.1` sirve solo para dos ventanas en la misma PC. El puerto TCP es 12345: la primera vez Windows pregunta si Java puede usar la red; hay que permitirlo en redes **privadas** en la PC del servidor. La partida empieza cuando los dos jugadores están conectados. En red, la vida la decide el servidor; los mensajes están explicados al principio de `Red.pde`.
 
 ## Pestañas
 - `TankLAN.pde`: configuración, variables globales, `setup()`, `draw()` y teclado.

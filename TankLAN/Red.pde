@@ -14,24 +14,76 @@
 // Iniciar el servidor o conectar el cliente.
 void iniciarRed(){
   if(soyServidor){
+    miIpLocal=ipLocal();
     servidor=new Server(this,PUERTO);
     thread("escucharRed");
+    thread("anunciarServidor");
   }else{
     thread("conectarEnSegundoPlano");
   }
 }
 
-// Conectar al servidor sin frenar la pantalla.
+// Conectar al servidor sin frenar la pantalla. Si no está listo, reintenta cada segundo y medio.
 void conectarEnSegundoPlano(){
-  try{
-    cliente=new Client(this,ipServidor,PUERTO);
+  while(iniciado && esperandoSala){
+    estadoConexion="Buscando el servidor en "+ipServidor;
+    try{ cliente=new Client(this,ipServidor,PUERTO); }
+    catch(Exception e){ cliente=null; }
     if(cliente!=null && cliente.active()){
       estadoConexion="Conectado. Esperando al servidor";
       thread("escucharRed");
-    }else estadoConexion="No conecta. Revisa la IP y el puerto.";
-  }catch(Exception e){
-    estadoConexion="No conecta. Revisa la IP y el puerto.";
+      return;
+    }
+    estadoConexion="No conecta con "+ipServidor+". Reintentando";
+    delay(1500);
   }
+}
+
+// --- Búsqueda automática ---
+// El servidor grita "TANKLAN" a toda la red una vez por segundo (broadcast UDP).
+// El cliente escucha esos avisos y copia la IP de quien lo mandó.
+String ipEncontrada="";          // última IP de servidor que se escuchó
+boolean ipEscritaAMano=false;    // si el jugador escribió la IP, no se la pisamos
+
+// Servidor: avisar a toda la red que hay una partida.
+void anunciarServidor(){
+  try{
+    DatagramSocket socket=new DatagramSocket();
+    socket.setBroadcast(true);
+    byte[] mensaje="TANKLAN".getBytes();
+    InetAddress todos=InetAddress.getByName("255.255.255.255");
+    while(iniciado && soyServidor){
+      socket.send(new DatagramPacket(mensaje,mensaje.length,todos,PUERTO_AVISO));
+      delay(1000);
+    }
+    socket.close();
+  }catch(Exception e){}
+}
+
+// Cliente: escuchar avisos y completar la IP del servidor sola.
+void buscarServidores(){
+  try{
+    DatagramSocket socket=new DatagramSocket(null);
+    socket.setReuseAddress(true);
+    socket.bind(new InetSocketAddress(PUERTO_AVISO));
+    byte[] buffer=new byte[32];
+    while(true){
+      DatagramPacket paquete=new DatagramPacket(buffer,buffer.length);
+      socket.receive(paquete);
+      String texto=new String(paquete.getData(),0,paquete.getLength());
+      if(texto.equals("TANKLAN")){
+        ipEncontrada=paquete.getAddress().getHostAddress();
+        if(!ipEscritaAMano) ipServidor=ipEncontrada;
+      }
+    }
+  }catch(Exception e){}
+}
+
+// IP de esta computadora en la red local (la que tiene que escribir el cliente).
+String miIpLocal="";
+String ipLocal(){
+  try{ return java.net.InetAddress.getLocalHost().getHostAddress(); }
+  catch(Exception e){ return "desconocida"; }
 }
 
 // Recibir mensajes en un hilo separado y guardarlos para procesarlos en draw().
